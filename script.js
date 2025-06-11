@@ -1,6 +1,5 @@
-
 // --- Daten (wird im RAM gespeichert) ---
-const lieferanten = [
+let lieferanten = [
     { id: 1, name: "Fam. Lassnig", aktiv: true },
     { id: 2, name: "Bauernhof Knafl", aktiv: true },
     { id: 3, name: "Bio Hof Steiner", aktiv: false }
@@ -12,10 +11,26 @@ let produkte = [
     { id: 103, name: "Zirbenansatz", preis: 4.5, bestand: 5, verkauf: 3, letzterVerkauf: "2025-06-08 14:22", lieferant: "Bauernhof Knafl" }
 ];
 
+function loadData() {
+    const lsL = localStorage.getItem('lieferanten');
+    const lsP = localStorage.getItem('produkte');
+    if (lsL) lieferanten = JSON.parse(lsL);
+    if (lsP) produkte = JSON.parse(lsP);
+}
+
+function saveData() {
+    localStorage.setItem('lieferanten', JSON.stringify(lieferanten));
+    localStorage.setItem('produkte', JSON.stringify(produkte));
+}
+
+loadData();
+
 // --- Produktverwaltung ---
 function initProdukte() {
     const lieferantenSelect = document.getElementById("produkt-lieferant");
     const produktSelect = document.getElementById("produkt-auswahl");
+    lieferantenSelect.innerHTML = "";
+    produktSelect.innerHTML = "";
     lieferanten.forEach(l => {
         let opt = document.createElement("option");
         opt.value = l.name;
@@ -32,7 +47,7 @@ function initProdukte() {
             opt.textContent = p.name;
             produktSelect.appendChild(opt);
         });
-        updateProduktInfo();
+        produktSelect.dispatchEvent(new Event("change"));
     });
 
     produktSelect.addEventListener("change", updateProduktInfo);
@@ -49,12 +64,23 @@ function updateProduktInfo() {
     document.getElementById("umsatz").value = (produkt.verkauf * produkt.preis).toFixed(2) + " €";
     document.getElementById("verkauf-seit").value = Math.floor(produkt.verkauf / 2);
     document.getElementById("letzter-verkauf").value = produkt.letzterVerkauf;
+    const editName = document.getElementById("edit-name");
+    const editPreis = document.getElementById("edit-preis");
+    if (editName && editPreis) {
+        editName.value = produkt.name;
+        editPreis.value = produkt.preis;
+    }
 }
 
 function loescheProdukt() {
     const id = document.getElementById("produkt-auswahl").value;
-    produkte = produkte.filter(p => p.id != id);
-    initProdukte();
+    if (!id) return;
+    if (confirm("Produkt wirklich löschen?")) {
+        produkte = produkte.filter(p => p.id != id);
+        saveData();
+        initProdukte();
+        ladeInventurTabelle();
+    }
 }
 
 function neuesProdukt() {
@@ -64,12 +90,33 @@ function neuesProdukt() {
     const lieferant = document.getElementById("produkt-lieferant").value;
     if (!name || isNaN(preis)) return alert("Bitte gültige Eingaben machen.");
     produkte.push({ id, name, preis, bestand: 0, verkauf: 0, letzterVerkauf: "-", lieferant });
+    saveData();
     initProdukte();
+    ladeInventurTabelle();
+    document.getElementById("neu-name").value = "";
+    document.getElementById("neu-preis").value = "";
+}
+
+function bearbeiteProdukt() {
+    const id = document.getElementById("produkt-auswahl").value;
+    const name = document.getElementById("edit-name").value;
+    const preis = parseFloat(document.getElementById("edit-preis").value);
+    const produkt = produkte.find(p => p.id == id);
+    if (produkt && name && !isNaN(preis)) {
+        produkt.name = name;
+        produkt.preis = preis;
+        saveData();
+        initProdukte();
+        ladeInventurTabelle();
+    } else {
+        alert("Bitte gültige Eingaben machen.");
+    }
 }
 
 // --- Lieferantenverwaltung ---
 function initLieferanten() {
     const select = document.getElementById("lieferant-auswahl");
+    select.innerHTML = "";
     lieferanten.forEach(l => {
         let opt = document.createElement("option");
         opt.value = l.name;
@@ -91,6 +138,8 @@ function updateLieferantInfo() {
     document.getElementById("lieferant-produkte").value = zugeordnet.length;
     document.getElementById("lieferant-bestand").value = zugeordnet.reduce((sum, p) => sum + p.bestand, 0);
     document.getElementById("lieferant-umsatz").value = zugeordnet.reduce((sum, p) => sum + (p.preis * p.verkauf), 0).toFixed(2) + " €";
+    const edit = document.getElementById("edit-lieferant-name");
+    if (edit) edit.value = lieferant.name;
 }
 
 function toggleLieferantStatus() {
@@ -99,6 +148,7 @@ function toggleLieferantStatus() {
     if (lieferant) {
         lieferant.aktiv = !lieferant.aktiv;
         updateLieferantInfo();
+        saveData();
     }
 }
 
@@ -108,12 +158,42 @@ function neuerLieferant() {
     const pw = document.getElementById("neu-lieferant-pw").value;
     if (!name || !pw) return alert("Bitte gültige Eingaben machen.");
     lieferanten.push({ id, name, aktiv: true });
-    location.reload();
+    saveData();
+    initLieferanten();
+    document.getElementById("neu-lieferant-name").value = "";
+    document.getElementById("neu-lieferant-pw").value = "";
+}
+
+function bearbeiteLieferant() {
+    const name = document.getElementById("lieferant-auswahl").value;
+    const neuName = document.getElementById("edit-lieferant-name").value;
+    const lieferant = lieferanten.find(l => l.name === name);
+    if (lieferant && neuName) {
+        lieferant.name = neuName;
+        produkte.forEach(p => { if (p.lieferant === name) p.lieferant = neuName; });
+        saveData();
+        initLieferanten();
+        if (document.getElementById('produkt-lieferant')) initProdukte();
+    }
+}
+
+function loescheLieferant() {
+    const name = document.getElementById("lieferant-auswahl").value;
+    if (!name) return;
+    if (confirm("Lieferant wirklich löschen? Alle zugehörigen Produkte werden entfernt.")) {
+        lieferanten = lieferanten.filter(l => l.name !== name);
+        produkte = produkte.filter(p => p.lieferant !== name);
+        saveData();
+        initLieferanten();
+        if (document.getElementById('produkt-lieferant')) initProdukte();
+        ladeInventurTabelle();
+    }
 }
 
 // --- Inventur dynamisch ---
 function ladeInventurTabelle() {
     const tbody = document.getElementById("inventur-tbody");
+    if (!tbody) return;
     tbody.innerHTML = "";
     produkte.forEach(p => {
         const row = document.createElement("tr");
