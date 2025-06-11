@@ -1,23 +1,11 @@
 # Unsre Speis Verwaltung
 
-Dies ist eine einfache Beispielanwendung zur Verwaltung eines Selbstbedienungsladens. Sie beinhaltet eine kleine Website (HTML/CSS/JS) sowie ein Node.js Backend zur Speicherung der Daten.
+Diese kleine Demo-Webseite dient zur Verwaltung von Lieferanten und Produkten für den Selbstbedienungsladen "Unsre Speis". Alle Daten werden rein im Browser gehalten, es ist also keine Serverkomponente notwendig.
 
-## Starten der Anwendung
+## Nutzung
 
-1. Abhängigkeiten installieren:
-   ```bash
-   npm install
-   ```
-2. Server starten:
-   ```bash
-   node server.js
-   ```
-3. Die Webseite steht anschließend unter `http://localhost:3000` zur Verfügung.
+1. Repository klonen oder als ZIP herunterladen
+2. `index.html` im Browser öffnen
+3. Über die Navigation können Lieferanten, Produkte und die Inventur verwaltet bzw. eingesehen werden
 
-## Funktionen
-
-- **Lieferanten verwalten** – Anlegen neuer Lieferanten und Aktivieren/Deaktivieren bestehender.
-- **Produkte verwalten** – Produkte anlegen oder löschen und Bestände einsehen.
-- **Inventur anzeigen** – Übersicht aller Produkte und ihrer Lagerbestände.
-
-Alle Daten werden lokal in der Datei `data.json` gespeichert.
+Alle Änderungen gehen beim Neuladen der Seite verloren, da die Daten nur im Speicher liegen.
