@@ -1,0 +1,51 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produktverwaltung</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script defer src="script.js"></script>
+</head>
+<body class="bg-light" onload="initProdukte()">
+    <div class="d-flex">
+        <nav class="sidebar p-3">
+            <h5>🍴 Unsre Speis</h5>
+            <ul class="nav flex-column">
+                <li class="nav-item"><a href="inventur.html" class="nav-link">Inventur</a></li>
+                <li class="nav-item"><a href="lieferanten.html" class="nav-link">Lieferanten</a></li>
+                <li class="nav-item"><a href="produkte.html" class="nav-link active">Produkte</a></li>
+                <li class="nav-item"><a href="index.html" class="nav-link">🏠 Startseite</a></li>
+            </ul>
+        </nav>
+        <main class="flex-fill p-4">
+            <h3>Produktverwaltung</h3>
+            <div class="row">
+                <div class="col-md-7">
+                    <label>Anbieter</label>
+                    <select id="produkt-lieferant" class="form-select mb-3"></select>
+                    <label>Produkt</label>
+                    <select id="produkt-auswahl" class="form-select mb-3"></select>
+                    <div class="row g-2">
+                        <div class="col-md-6"><input id="preis" class="form-control" readonly placeholder="Preis"></div>
+                        <div class="col-md-6"><input id="bestand" class="form-control" readonly placeholder="Verfügbar"></div>
+                        <div class="col-md-6"><input id="verkauft" class="form-control bg-danger text-white" readonly placeholder="Verkauft"></div>
+                        <div class="col-md-6"><input id="umsatz" class="form-control bg-danger text-white" readonly placeholder="Umsatz"></div>
+                        <div class="col-md-6"><input id="verkauf-seit" class="form-control bg-danger text-white" readonly placeholder="Seit Inventur"></div>
+                        <div class="col-md-6"><input id="letzter-verkauf" class="form-control" readonly placeholder="Letzter Verkauf"></div>
+                    </div>
+                    <button class="btn btn-outline-danger mt-3 w-100" onclick="loescheProdukt()">Produkt löschen</button>
+                </div>
+                <div class="col-md-5">
+                    <h5>Neues Produkt anlegen</h5>
+                    <input id="neu-name" class="form-control mb-2" placeholder="Produktname">
+                    <input id="neu-preis" class="form-control mb-2" type="number" step="0.01" placeholder="Preis">
+                    <button class="btn btn-success w-100" onclick="neuesProdukt()">Bestätigen</button>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
