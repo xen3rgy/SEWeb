@@ -22,6 +22,7 @@
         </nav>
         <main class="flex-fill p-4">
             <h3>Produktverwaltung</h3>
+            <p class="text-muted">Wählen Sie einen Anbieter und ein Produkt aus, um Detailinformationen einzusehen.</p>
             <div class="row">
                 <div class="col-md-7">
                     <label>Anbieter</label>
@@ -29,16 +30,36 @@
                     <label>Produkt</label>
                     <select id="produkt-auswahl" class="form-select mb-3"></select>
                     <div class="row g-2">
-                        <div class="col-md-6"><input id="preis" class="form-control" readonly placeholder="Preis"></div>
-                        <div class="col-md-6"><input id="bestand" class="form-control" readonly placeholder="Verfügbar"></div>
-                        <div class="col-md-6"><input id="verkauft" class="form-control bg-danger text-white" readonly placeholder="Verkauft"></div>
-                        <div class="col-md-6"><input id="umsatz" class="form-control bg-danger text-white" readonly placeholder="Umsatz"></div>
-                        <div class="col-md-6"><input id="verkauf-seit" class="form-control bg-danger text-white" readonly placeholder="Seit Inventur"></div>
-                        <div class="col-md-6"><input id="letzter-verkauf" class="form-control" readonly placeholder="Letzter Verkauf"></div>
+                        <div class="col-md-6">
+                            <label for="preis" class="form-label">Preis</label>
+                            <input id="preis" class="form-control" readonly placeholder="Preis">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="bestand" class="form-label">Verfügbar</label>
+                            <input id="bestand" class="form-control" readonly placeholder="Verfügbar">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="verkauft" class="form-label">Verkauft</label>
+                            <input id="verkauft" class="form-control" readonly placeholder="Verkauft">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="umsatz" class="form-label">Umsatz</label>
+                            <input id="umsatz" class="form-control" readonly placeholder="Umsatz">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="verkauf-seit" class="form-label">Seit Inventur</label>
+                            <input id="verkauf-seit" class="form-control" readonly placeholder="Seit Inventur">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="letzter-verkauf" class="form-label">Letzter Verkauf</label>
+                            <input id="letzter-verkauf" class="form-control" readonly placeholder="Letzter Verkauf">
+                        </div>
                     </div>
                     <div class="mt-3">
                         <h5>Produkt bearbeiten</h5>
+                        <label for="edit-name" class="form-label">Neuer Name</label>
                         <input id="edit-name" class="form-control mb-2" placeholder="Neuer Name">
+                        <label for="edit-preis" class="form-label">Neuer Preis</label>
                         <input id="edit-preis" class="form-control mb-2" type="number" step="0.01" placeholder="Neuer Preis">
                         <button class="btn btn-primary w-100 mb-2" onclick="bearbeiteProdukt()">Speichern</button>
                         <button class="btn btn-outline-danger w-100" onclick="loescheProdukt()">Produkt löschen</button>
@@ -46,7 +67,9 @@
                 </div>
                 <div class="col-md-5">
                     <h5>Neues Produkt anlegen</h5>
+                    <label for="neu-name" class="form-label">Produktname</label>
                     <input id="neu-name" class="form-control mb-2" placeholder="Produktname">
+                    <label for="neu-preis" class="form-label">Preis</label>
                     <input id="neu-preis" class="form-control mb-2" type="number" step="0.01" placeholder="Preis">
                     <button class="btn btn-success w-100" onclick="neuesProdukt()">Bestätigen</button>
                 </div>
