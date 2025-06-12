@@ -123,7 +123,7 @@ function loescheProdukt() {
 }
 
 function neuesProdukt() {
-  const id = Date.now();
+  const id = getNextId(produkte);
   const name = document.getElementById("neu-name").value;
   const preis = parseFloat(document.getElementById("neu-preis").value);
   const lieferant = document.getElementById("produkt-lieferant").value;
@@ -215,8 +215,12 @@ function toggleLieferantStatus() {
   }
 }
 
+function getNextId(list) {
+  return list.reduce((max, item) => Math.max(max, item.id), 0) + 1;
+}
+
 function neuerLieferant() {
-  const id = Date.now();
+  const id = getNextId(lieferanten);
   const name = document.getElementById("neu-lieferant-name").value;
   const pw = document.getElementById("neu-lieferant-pw").value;
   if (!name || !pw) return alert("Bitte gültige Eingaben machen.");
