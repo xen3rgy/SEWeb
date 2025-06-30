@@ -61,15 +61,29 @@ function saveData() {
 loadData();
 
 // Theme toggling
+function updateThemeIcon(isDark) {
+  const btn = document.querySelector('.theme-toggle');
+  if (btn) {
+    btn.textContent = isDark ? '☀️' : '🌙';
+    btn.setAttribute('aria-label', isDark ? 'Hellmodus' : 'Dunkelmodus');
+  }
+}
+
 function applyStoredTheme() {
-  const dark = localStorage.getItem('darkMode') === 'true';
-  if (dark) document.body.classList.add('dark');
+  const stored = localStorage.getItem('darkMode');
+  let isDark = stored === 'true';
+  if (stored === null) {
+    isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+  document.body.classList.toggle('dark', isDark);
+  updateThemeIcon(isDark);
 }
 
 function toggleTheme() {
-  document.body.classList.toggle('dark');
-  const isDark = document.body.classList.contains('dark');
+  const isDark = !document.body.classList.contains('dark');
+  document.body.classList.toggle('dark', isDark);
   localStorage.setItem('darkMode', isDark);
+  updateThemeIcon(isDark);
 }
 
 applyStoredTheme();
