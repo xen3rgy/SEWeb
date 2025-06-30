@@ -7,9 +7,16 @@ vereinheitlicht das Erscheinungsbild aller Seiten.
 
 - **Startseite entfernt:** `index.html` leitet nun direkt auf die
   Bestandsabfrage weiter.
-- **Bestandsabfrage erweitert:** Diese Seite verfügt jetzt über ein
-  Auswahlmenü für Lieferant und Produkt, damit der Lagerstand gefiltert
-  werden kann.
+- **Bestandsabfrage erweitert:** Der Lagerbestand kann nun nach
+  Lieferant gefiltert werden.
 - **Einheitliches Layout:** Alle Bereiche nutzen eine Seitenleiste und
   "Card"-Sektionen für Formulare und Tabellen. Farben und Abstände
   folgen der CI-Vorgabe der Login-Seite.
+- **Dokumentenverwaltung:** Admins können Dateien für Lieferanten
+  hochladen. Lieferanten laden diese in ihrem Postfach herunter.
+- **Chat-Funktion:** Nachrichten vom Admin an Lieferanten werden im
+  Postfach angezeigt.
+- **Neues Postfach:** Die Seite `postfach.html` bündelt Dokumente und
+  Nachrichten pro Lieferant.
+- **Modernes Design:** Alle Seiten nutzen nun die Schriftart "Inter" und
+  abgerundete Elemente für ein zeitgemäßes Erscheinungsbild.

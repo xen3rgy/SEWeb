@@ -32,21 +32,30 @@ let produkte = [
     bestand: 5,
     verkauf: 3,
     seitInventur: 1,
+
     letzterVerkauf: "2025-06-08 14:22",
     lieferant: "Bauernhof Knafl",
   },
 ];
+let dokumente = {};
+let nachrichten = {};
 
 function loadData() {
   const lsL = localStorage.getItem("lieferanten");
   const lsP = localStorage.getItem("produkte");
+  const lsD = localStorage.getItem("dokumente");
+  const lsN = localStorage.getItem("nachrichten");
   if (lsL) lieferanten = JSON.parse(lsL);
   if (lsP) produkte = JSON.parse(lsP);
+  if (lsD) dokumente = JSON.parse(lsD);
+  if (lsN) nachrichten = JSON.parse(lsN);
 }
 
 function saveData() {
   localStorage.setItem("lieferanten", JSON.stringify(lieferanten));
   localStorage.setItem("produkte", JSON.stringify(produkte));
+  localStorage.setItem("dokumente", JSON.stringify(dokumente));
+  localStorage.setItem("nachrichten", JSON.stringify(nachrichten));
 }
 
 loadData();
@@ -203,6 +212,8 @@ function updateLieferantInfo() {
     " €";
   const edit = document.getElementById("edit-lieferant-name");
   if (edit) edit.value = lieferant.name;
+  zeigeDokumenteAdmin(name);
+  zeigeNachrichtenAdmin(name);
 }
 
 function toggleLieferantStatus() {
@@ -268,13 +279,9 @@ function ladeInventurTabelle() {
   const tbody = document.getElementById("inventur-tbody");
   if (!tbody) return;
   const selectedLieferant = document.getElementById("inventur-lieferant")?.value;
-  const selectedProdukt = document.getElementById("inventur-produkt")?.value;
   tbody.innerHTML = "";
   produkte
-    .filter(
-      (p) => !selectedLieferant || p.lieferant === selectedLieferant,
-    )
-    .filter((p) => !selectedProdukt || p.name === selectedProdukt)
+    .filter((p) => !selectedLieferant || p.lieferant === selectedLieferant)
     .forEach((p) => {
       const row = document.createElement("tr");
       row.innerHTML = `<td>${p.name}</td><td>${p.bestand}</td>`;
@@ -284,8 +291,7 @@ function ladeInventurTabelle() {
 
 function initInventur() {
   const lieferantSel = document.getElementById("inventur-lieferant");
-  const produktSel = document.getElementById("inventur-produkt");
-  if (lieferantSel && produktSel) {
+  if (lieferantSel) {
     lieferantSel.innerHTML = "<option value=''>Alle</option>";
     lieferanten.forEach((l) => {
       const opt = document.createElement("option");
@@ -293,28 +299,110 @@ function initInventur() {
       opt.textContent = l.name;
       lieferantSel.appendChild(opt);
     });
-
-    function updateProdukte() {
-      produktSel.innerHTML = "<option value=''>Alle</option>";
-      produkte
-        .filter((p) =>
-          !lieferantSel.value || p.lieferant === lieferantSel.value,
-        )
-        .forEach((p) => {
-          const opt = document.createElement("option");
-          opt.value = p.name;
-          opt.textContent = p.name;
-          produktSel.appendChild(opt);
-        });
-    }
-
-    lieferantSel.addEventListener("change", () => {
-      updateProdukte();
-      ladeInventurTabelle();
-    });
-    produktSel.addEventListener("change", ladeInventurTabelle);
-
-    updateProdukte();
+    lieferantSel.addEventListener("change", ladeInventurTabelle);
   }
   ladeInventurTabelle();
 }
+
+// --- Dokumentenverwaltung ---
+function dokumentHochladen() {
+  const name = document.getElementById("lieferant-auswahl")?.value;
+  const inp = document.getElementById("dokument-upload");
+  if (!name || !inp || !inp.files.length) return;
+  const file = inp.files[0];
+  const reader = new FileReader();
+  reader.onload = () => {
+    if (!dokumente[name]) dokumente[name] = [];
+    dokumente[name].push({ name: file.name, data: reader.result });
+    saveData();
+    inp.value = "";
+    zeigeDokumenteAdmin(name);
+  };
+  reader.readAsDataURL(file);
+}
+
+function zeigeDokumenteAdmin(name) {
+  const list = document.getElementById("dokument-liste");
+  if (!list) return;
+  list.innerHTML = "";
+  (dokumente[name] || []).forEach((doc) => {
+    const li = document.createElement("li");
+    li.className = "list-group-item";
+    const a = document.createElement("a");
+    a.href = doc.data;
+    a.download = doc.name;
+    a.textContent = doc.name;
+    li.appendChild(a);
+    list.appendChild(li);
+  });
+}
+
+// --- Nachrichten ---
+function sendeNachricht() {
+  const name = document.getElementById("lieferant-auswahl")?.value;
+  const textEl = document.getElementById("nachricht-text");
+  const text = textEl?.value.trim();
+  if (!name || !text) return;
+  if (!nachrichten[name]) nachrichten[name] = [];
+  nachrichten[name].push({ text, time: new Date().toLocaleString() });
+  saveData();
+  textEl.value = "";
+  zeigeNachrichtenAdmin(name);
+}
+
+function zeigeNachrichtenAdmin(name) {
+  const box = document.getElementById("nachrichten-log");
+  if (!box) return;
+  box.innerHTML = "";
+  (nachrichten[name] || []).forEach((m) => {
+    const div = document.createElement("div");
+    div.textContent = `[${m.time}] ${m.text}`;
+    box.appendChild(div);
+  });
+}
+
+// --- Postfach ---
+function initPostfach() {
+  const sel = document.getElementById("postfach-lieferant");
+  if (!sel) return;
+  sel.innerHTML = "";
+  lieferanten.forEach((l) => {
+    const opt = document.createElement("option");
+    opt.value = l.name;
+    opt.textContent = l.name;
+    sel.appendChild(opt);
+  });
+  sel.addEventListener("change", () => {
+    zeigeDokumente(sel.value);
+    zeigeNachrichten(sel.value);
+  });
+  sel.dispatchEvent(new Event("change"));
+}
+
+function zeigeDokumente(name) {
+  const list = document.getElementById("postfach-dokumente");
+  if (!list) return;
+  list.innerHTML = "";
+  (dokumente[name] || []).forEach((doc) => {
+    const li = document.createElement("li");
+    li.className = "list-group-item";
+    const a = document.createElement("a");
+    a.href = doc.data;
+    a.download = doc.name;
+    a.textContent = doc.name;
+    li.appendChild(a);
+    list.appendChild(li);
+  });
+}
+
+function zeigeNachrichten(name) {
+  const box = document.getElementById("postfach-nachrichten");
+  if (!box) return;
+  box.innerHTML = "";
+  (nachrichten[name] || []).forEach((m) => {
+    const div = document.createElement("div");
+    div.textContent = `[${m.time}] ${m.text}`;
+    box.appendChild(div);
+  });
+}
+
