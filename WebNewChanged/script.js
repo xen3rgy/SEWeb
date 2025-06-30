@@ -279,13 +279,9 @@ function ladeInventurTabelle() {
   const tbody = document.getElementById("inventur-tbody");
   if (!tbody) return;
   const selectedLieferant = document.getElementById("inventur-lieferant")?.value;
-  const selectedProdukt = document.getElementById("inventur-produkt")?.value;
   tbody.innerHTML = "";
   produkte
-    .filter(
-      (p) => !selectedLieferant || p.lieferant === selectedLieferant,
-    )
-    .filter((p) => !selectedProdukt || p.name === selectedProdukt)
+    .filter((p) => !selectedLieferant || p.lieferant === selectedLieferant)
     .forEach((p) => {
       const row = document.createElement("tr");
       row.innerHTML = `<td>${p.name}</td><td>${p.bestand}</td>`;
@@ -295,8 +291,7 @@ function ladeInventurTabelle() {
 
 function initInventur() {
   const lieferantSel = document.getElementById("inventur-lieferant");
-  const produktSel = document.getElementById("inventur-produkt");
-  if (lieferantSel && produktSel) {
+  if (lieferantSel) {
     lieferantSel.innerHTML = "<option value=''>Alle</option>";
     lieferanten.forEach((l) => {
       const opt = document.createElement("option");
@@ -304,28 +299,7 @@ function initInventur() {
       opt.textContent = l.name;
       lieferantSel.appendChild(opt);
     });
-
-    function updateProdukte() {
-      produktSel.innerHTML = "<option value=''>Alle</option>";
-      produkte
-        .filter((p) =>
-          !lieferantSel.value || p.lieferant === lieferantSel.value,
-        )
-        .forEach((p) => {
-          const opt = document.createElement("option");
-          opt.value = p.name;
-          opt.textContent = p.name;
-          produktSel.appendChild(opt);
-        });
-    }
-
-    lieferantSel.addEventListener("change", () => {
-      updateProdukte();
-      ladeInventurTabelle();
-    });
-    produktSel.addEventListener("change", ladeInventurTabelle);
-
-    updateProdukte();
+    lieferantSel.addEventListener("change", ladeInventurTabelle);
   }
   ladeInventurTabelle();
 }
