@@ -60,6 +60,20 @@ function saveData() {
 
 loadData();
 
+// Theme toggling
+function applyStoredTheme() {
+  const dark = localStorage.getItem('darkMode') === 'true';
+  if (dark) document.body.classList.add('dark');
+}
+
+function toggleTheme() {
+  document.body.classList.toggle('dark');
+  const isDark = document.body.classList.contains('dark');
+  localStorage.setItem('darkMode', isDark);
+}
+
+applyStoredTheme();
+
 // --- Produktverwaltung ---
 function initProdukte() {
   const lieferantenSelect = document.getElementById("produkt-lieferant");
