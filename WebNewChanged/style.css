@@ -6,9 +6,20 @@
     --primary-dark: #27642a;
     --sidebar-bg: #343a40;
     --background: #f3f4f6;
+    --text-color: #333;
+    --card-bg: #fff;
+    --card-border: 1px solid rgba(0,0,0,0.05);
     --radius: 0.5rem;
     --shadow-sm: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.05);
     --shadow-md: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
+}
+
+body.dark {
+    --background: #1e1e1e;
+    --sidebar-bg: #212529;
+    --text-color: #f8f9fa;
+    --card-bg: #2b2b2b;
+    --card-border: 1px solid rgba(255,255,255,0.05);
 }
 
 body {
@@ -16,7 +27,7 @@ body {
     font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
-    color: #333;
+    color: var(--text-color);
     line-height: 1.6;
 }
 
@@ -43,6 +54,26 @@ nav.sidebar h5 {
     font-size: 1.5rem;
     font-weight: 600;
     letter-spacing: .5px;
+}
+
+.theme-toggle {
+    border: 1px solid rgba(255,255,255,0.4);
+    background: transparent;
+    color: #fff;
+    border-radius: var(--radius);
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin-bottom: 1rem;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.theme-toggle:hover {
+    background-color: rgba(255,255,255,0.2);
+    color: #fff;
 }
 
 nav.sidebar .nav-link {
@@ -93,22 +124,24 @@ h3 {
 }
 
 .table {
-    background-color: #fff;
+    background-color: var(--card-bg);
     border-radius: var(--radius);
+    color: var(--text-color);
 }
 
 .table-responsive {
     border-radius: var(--radius);
     box-shadow: var(--shadow-sm);
+    border: var(--card-border);
 }
 
 .bg-card {
-    background-color: #fff;
+    background-color: var(--card-bg);
     border-radius: var(--radius);
     box-shadow: var(--shadow-md);
     padding: 1.5rem;
     margin-bottom: 1.5rem;
-    border: 1px solid rgba(0,0,0,0.05);
+    border: var(--card-border);
     transition: box-shadow 0.2s ease;
 }
 
@@ -158,7 +191,8 @@ h3 {
 footer {
     text-align: center;
     margin-top: 40px;
-    color: #777;
+    color: var(--text-color);
+    opacity: 0.7;
     font-size: 0.9rem;
     padding: 1rem 0;
 }
